@@ -12,7 +12,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.control.Spinner?>
 <BorderPane fx:controller="plotter.PlotterController"
-            xmlns:fx="http://javafx.com/fxml" fx:id="MainWindow" prefWidth="800" prefHeight="600">
+            xmlns:fx="http://javafx.com/fxml" fx:id="MainWindow" prefWidth="850" prefHeight="700">
     <center>
         <Pane>
             <Canvas fx:id="canvas" height="600" width="800" />
@@ -32,16 +32,23 @@
                     <ColorPicker fx:id="lineColorPicker" />
                 </children>
             </HBox>
+            <HBox alignment="CENTER" spacing="5">
+                <children>
+                    <Label fx:id="lblTmin" text="tmin" />
+                    <Spinner fx:id="spinnerTmin" prefWidth="100"/>
+                    <Label fx:id="lblTmax" text="tmax" />
+                    <Spinner fx:id="spinnerTmax" prefWidth="100"/>
+                    <Label fx:id="lblDeltaT" text="dt" />
+                    <Spinner fx:id="spinnerDeltaT" prefWidth="100"/>
+                </children>
+            </HBox>
             <children>
                 <HBox alignment="CENTER" spacing="5">
                     <children>
-                        <Label fx:id="lblTmin" text="tmin" />
-                        <Spinner fx:id="spinnerTmin" prefWidth="100"/>
-                        <Label fx:id="lblTmax" text="tmax" />
-                        <Spinner fx:id="spinnerTmax" prefWidth="100"/>
                         <Button fx:id="btnPlot" prefWidth="100" text="Plot" onAction="#onPlotButtonClicked"></Button>
                         <Button fx:id="btnStartStopAnimation" prefWidth="100" text="Start/Stop" onAction="#onStartStopAnimationButtonClicked"></Button>
-                        <Button fx:id="btnSaveGraphAsImage" prefWidth="100" text="Close" onAction="#onSaveGraphAsImageButtonClicked"></Button>
+                        <Button fx:id="btnClearCanvas" prefWidth="100" text="Clear" onAction="#onClearCanvasClicked"></Button>
+                        <Button fx:id="btnSaveGraphAsImage" prefWidth="130" text="Save as image" onAction="#onSaveGraphAsImageButtonClicked"></Button>
                         <Button fx:id="btnCloseApp" prefWidth="100" text="Close" onAction="#onCloseAppButtonClicked"></Button>
                     </children>
                 </HBox>
