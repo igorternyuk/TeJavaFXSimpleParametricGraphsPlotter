@@ -1,0 +1,52 @@
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.layout.GridPane?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.canvas.Canvas?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.ColorPicker?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.control.Spinner?>
+<BorderPane fx:controller="plotter.PlotterController"
+            xmlns:fx="http://javafx.com/fxml" fx:id="MainWindow" prefWidth="800" prefHeight="600">
+    <center>
+        <Pane>
+            <Canvas fx:id="canvas" height="600" width="800" />
+        </Pane>
+    </center>
+    <bottom>
+        <VBox alignment="CENTER" spacing="5">
+            <HBox alignment="CENTER" spacing="5">
+                <children>
+                    <Label fx:id="lblFunctionY" text="y=f(t)" />
+                    <TextField fx:id="txtFunctionY" text="" prefWidth="100"/>
+                    <Label fx:id="lblFunctionX" text="x=f(t)" />
+                    <TextField fx:id="txtFunctionX" text="" prefWidth="100"/>
+                    <Label fx:id="lblLineThickness" text="Line width" />
+                    <Spinner fx:id="spinnerLineThickness"/>
+                    <Label fx:id="lblColor" text="Color" />
+                    <ColorPicker fx:id="lineColorPicker" />
+                </children>
+            </HBox>
+            <children>
+                <HBox alignment="CENTER" spacing="5">
+                    <children>
+                        <Label fx:id="lblTmin" text="tmin" />
+                        <Spinner fx:id="spinnerTmin" prefWidth="100"/>
+                        <Label fx:id="lblTmax" text="tmax" />
+                        <Spinner fx:id="spinnerTmax" prefWidth="100"/>
+                        <Button fx:id="btnPlot" prefWidth="100" text="Plot" onAction="#onPlotButtonClicked"></Button>
+                        <Button fx:id="btnStartStopAnimation" prefWidth="100" text="Start/Stop" onAction="#onStartStopAnimationButtonClicked"></Button>
+                        <Button fx:id="btnSaveGraphAsImage" prefWidth="100" text="Close" onAction="#onSaveGraphAsImageButtonClicked"></Button>
+                        <Button fx:id="btnCloseApp" prefWidth="100" text="Close" onAction="#onCloseAppButtonClicked"></Button>
+                    </children>
+                </HBox>
+            </children>
+        </VBox>
+    </bottom>
+</BorderPane>
+
