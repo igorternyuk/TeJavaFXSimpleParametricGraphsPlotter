@@ -1,6 +1,7 @@
 package plotter;
 
 import javafx.animation.AnimationTimer;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Point2D;
@@ -15,6 +16,7 @@ import java.util.ResourceBundle;
 
 public class PlotterController implements Initializable {
     private static final String EXIT_DIALOG_WINDOW_MESSAGE = "Do you really want to exit?";
+    private static final String EXIT_DIALOG_WINDOW_TITLE = "Confirm exit, please";
     @FXML
     private Canvas canvas;
 
@@ -184,10 +186,7 @@ public class PlotterController implements Initializable {
 
     public void onCloseAppButtonClicked(){
         Alert alert = new Alert(Alert.AlertType.WARNING, EXIT_DIALOG_WINDOW_MESSAGE, ButtonType.YES, ButtonType.NO);
-        /*String msg = "Do you really want to exit?";
-        Alert alert = new Alert(Alert.AlertType.WARNING, msg, ButtonType.YES,
-                ButtonType.NO);
-        alert.setTitle("Exit confirmation");
+        alert.setTitle(EXIT_DIALOG_WINDOW_TITLE);
         alert.showAndWait();
         if (alert.getResult() == ButtonType.YES) {
             Platform.exit();
@@ -195,6 +194,5 @@ public class PlotterController implements Initializable {
         } else if(alert.getResult() == ButtonType.NO){
             alert.close();
         }
-        * */
     }
 }
