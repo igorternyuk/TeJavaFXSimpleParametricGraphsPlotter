@@ -11,6 +11,8 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.paint.Color;
 import javafx.stage.FileChooser;
 import parser.Expression;
 import parser.MathParser;
@@ -30,6 +32,9 @@ public class PlotterController implements Initializable {
     private static final int DEFAULT_LINE_WIDTH = 2;
     private static final double SPINNER_STEP = 0.01;
     private static final double DEFAULT_PARAMETER_STEP = 0.01;
+
+    @FXML
+    private BorderPane mainWindow;
 
     @FXML
     private Canvas canvas;
@@ -65,15 +70,11 @@ public class PlotterController implements Initializable {
     private Button btnCloseApp;
 
     private GraphicsContext gc;
-
     private AnimationTimer timer;
-
     private MathParser parser;
-
     private double t = 0, tmin = 0, tmax = 0, dt = 0;
     private Point2D prevPoint = null, currPoint = null;
     private Expression funcX, funcY;
-
     private boolean isAnimationActive = false;
 
     @Override
@@ -83,20 +84,39 @@ public class PlotterController implements Initializable {
 
     public void initialize(){
         parser = new MathParser();
-        gc = canvas.getGraphicsContext2D();
-        spinnerLineThickness.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1, LINE_THICKNESS_MAX,
-                DEFAULT_LINE_WIDTH, 1));
-        spinnerTmin.setEditable(true);
-        spinnerTmin.setValueFactory(new SpinnerValueFactory.DoubleSpinnerValueFactory(Double.MIN_VALUE,
-                Double.MAX_VALUE, 0, SPINNER_STEP));
-        spinnerTmax.setEditable(true);
-        spinnerTmax.setValueFactory(new SpinnerValueFactory.DoubleSpinnerValueFactory(Double.MIN_VALUE,
-                Double.MAX_VALUE, 0, SPINNER_STEP));
-        spinnerDeltaT.setEditable(true);
-        SpinnerValueFactory<Double> factory = new SpinnerValueFactory.DoubleSpinnerValueFactory(Double.MIN_VALUE,
-                Double.MAX_VALUE, DEFAULT_PARAMETER_STEP, SPINNER_STEP);
-        spinnerDeltaT.setValueFactory(factory);
 
+        gc = canvas.getGraphicsContext2D();
+
+        spinnerLineThickness.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1,
+                LINE_THICKNESS_MAX, DEFAULT_LINE_WIDTH, 1));
+
+        spinnerTmin.setEditable(true);
+        SpinnerValueFactory<Double> tminValueFactory = new SpinnerValueFactory.DoubleSpinnerValueFactory(
+                Double.MIN_VALUE, Double.MAX_VALUE, 0, SPINNER_STEP);
+        spinnerTmin.setValueFactory(tminValueFactory);
+        TextFormatter<Double> tminFormatter = new TextFormatter<>(tminValueFactory.getConverter(),
+                tminValueFactory.getValue());
+        spinnerTmin.getEditor().setTextFormatter(tminFormatter);
+        tminValueFactory.valueProperty().bindBidirectional(tminFormatter.valueProperty());
+        
+        spinnerTmax.setEditable(true);
+        SpinnerValueFactory<Double> tmaxValueFactory = new SpinnerValueFactory.DoubleSpinnerValueFactory(
+                Double.MIN_VALUE, Double.MAX_VALUE, 0, SPINNER_STEP);
+        spinnerTmax.setValueFactory(tmaxValueFactory);
+        TextFormatter<Double> tmaxFormatter = new TextFormatter<>(tmaxValueFactory.getConverter(),
+                tmaxValueFactory.getValue());
+        spinnerTmax.getEditor().setTextFormatter(tmaxFormatter);
+        tmaxValueFactory.valueProperty().bindBidirectional(tmaxFormatter.valueProperty());
+        
+        spinnerDeltaT.setEditable(true);
+        SpinnerValueFactory<Double> deltaTValueFactory = new SpinnerValueFactory.DoubleSpinnerValueFactory(
+                Double.MIN_VALUE, Double.MAX_VALUE, DEFAULT_PARAMETER_STEP, SPINNER_STEP);
+        spinnerDeltaT.setValueFactory(deltaTValueFactory);
+
+        TextFormatter<Double> deltaTFormatter = new TextFormatter<>(deltaTValueFactory.getConverter(),
+                deltaTValueFactory.getValue());
+        spinnerDeltaT.getEditor().setTextFormatter(deltaTFormatter);
+        deltaTValueFactory.valueProperty().bindBidirectional(deltaTFormatter.valueProperty());
         timer = new AnimationTimer() {
             @Override
             public void handle(long now) {
@@ -109,6 +129,7 @@ public class PlotterController implements Initializable {
                 draw();
             }
         };
+        clearCanvas();
     }
 
     private void draw() {
@@ -129,6 +150,26 @@ public class PlotterController implements Initializable {
         return new Point2D(reducedX, reducedY);
     }
 
+    private void drawGrid() {
+        gc.setStroke(Color.GREEN.brighter());
+        gc.setLineWidth(1);
+        final double step = canvas.getWidth() / 20;
+
+        for (double y = 0; y <= canvas.getHeight(); y += step) {
+            //Horizontal line
+            final Point2D first = new Point2D(0, y);
+            final Point2D second = new Point2D(canvas.getWidth(), y);
+            gc.strokeLine(first.getX(), first.getY(), second.getX(), second.getY());
+        }
+
+        for (double x = 0; x <= canvas.getWidth(); x += step) {
+            //Vertical line
+            final Point2D first = new Point2D(x, 0);
+            final Point2D second = new Point2D(x, canvas.getHeight());
+            gc.strokeLine(first.getX(), first.getY(), second.getX(), second.getY());
+        }
+    }
+
     public void onPlotButtonClicked(){
         try {
             prevPoint = null;
@@ -136,10 +177,11 @@ public class PlotterController implements Initializable {
             tmin = spinnerTmin.getValue();
             t = tmin;
             tmax = spinnerTmax.getValue();
-            dt = spinnerDeltaT.getValue()/*.doubleValue()*/;
+            dt = spinnerDeltaT.getValue();
             parser.addVariable("t", tmin);
             funcX = parser.parse(txtFunctionX.getText());
             funcY = parser.parse(txtFunctionY.getText());
+            clearCanvas();
             gc.setStroke(lineColorPicker.getValue());
             gc.setLineWidth(spinnerLineThickness.getValue());
             startTimer();
@@ -188,8 +230,13 @@ public class PlotterController implements Initializable {
         }
     }
 
-    public void onClearCanvasClicked(ActionEvent actionEvent) {
+    private void clearCanvas() {
         gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
+        drawGrid();
+    }
+
+    public void onClearCanvasClicked(ActionEvent actionEvent) {
+        this.clearCanvas();
         txtFunctionX.clear();
         txtFunctionY.clear();
     }

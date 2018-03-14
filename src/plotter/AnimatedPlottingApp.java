@@ -14,6 +14,7 @@ public class AnimatedPlottingApp extends Application {
         Parent root = FXMLLoader.load(getClass().getResource("PlotterController.fxml"));
         primaryStage.setTitle(TITLE_OF_PROGRAM);
         primaryStage.setScene(new Scene(root));
+        primaryStage.setResizable(false);
         primaryStage.show();
     }
 
